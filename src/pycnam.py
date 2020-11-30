@@ -1,6 +1,6 @@
 from typing import List
-from PyQt5.QtWidgets import (QApplication, QWidget,
-                            QGridLayout, QPushButton)
+from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout,
+                            QGridLayout, QPushButton, QLabel)
 
 from characters.ghost import Ghost
 from characters.pacman import Pacman
@@ -19,24 +19,41 @@ class Pycman(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.manager = GameManager()
         self.initGUI()
         self.initGame()
-        self.manager = GameManager()
 
     def initGUI(self):
+        title = QLabel('Pycman Game')
+        title.setStyleSheet('color: #fff; font-size: 20px;')
+        self.gameMap = Map()
         self.playButton = QPushButton('Play Game')
+        self.playButton.setStyleSheet('''
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            border-width: 2px;
+            border-style: dashed;
+            border-color: #ff0;
+            border-radius: 2px;
+            color: #ff0;
+        ''')
         self.playButton.clicked.connect(self.handlePlayClick)
-        self.container = QGridLayout()
-        self.container.addWidget(self.playButton, 0, 0)
+        self.container = QVBoxLayout()
+        # self.container.addWidget(title)
+        self.container.addWidget(self.gameMap)
+        self.container.addWidget(self.playButton)
+        self.setStyleSheet('background-color: #000;')
         self.setLayout(self.container)
         self.setWindowTitle('Pycman')
         self.setGeometry(100, 100, 500, 500)
         self.show()
 
     def initGame(self):
-        pass
+        self.manager.resetGame()
 
     def handlePlayClick(self):
+        print('play clicked')
         if self.manager.isPlaying():
             self.manager.stopGame()
             self.playButton.setText('Play Game')
