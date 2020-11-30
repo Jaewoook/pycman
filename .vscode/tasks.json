@@ -1,0 +1,20 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Pycman",
+            "type": "shell",
+            "command": "/usr/local/anaconda3/envs/kmu/bin/python",
+            "args": [
+                "${file}"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "group": "test",
+            "problemMatcher": []
+        }
+    ]
+}
