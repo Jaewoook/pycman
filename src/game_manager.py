@@ -21,6 +21,7 @@ class GameManager:
     ghosts: List[Ghost]
 
     def __init__(self, gameMap: GameMap, ghosts: List[Ghost]):
+        self.looper = None
         self.playing = False
         self.score = 0
         self.map = gameMap
@@ -39,7 +40,8 @@ class GameManager:
 
     def stopGame(self):
         self.playing = False
-        self.looper.cancel()
+        if self.looper is not None:
+            self.looper.cancel()
 
     def isPlaying(self):
         return self.playing
@@ -69,7 +71,8 @@ class GameManager:
 
         self.map.mapLayout.removeWidget(pacman)
         nextBlock = self.map.mapWidgets[y][x]
-        nextBlock.visit()
+        if nextBlock.visit():
+            self.score += 1
         nextBlock.hide()
 
         self.map.mapWidgets[oldY][oldX].show()

@@ -1,8 +1,9 @@
 from typing import List
+
+from PyQt5 import QtGui
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout,
                             QGridLayout, QPushButton, QLabel,
                             QSizePolicy)
-from PyQt5.QtGui import QKeyEvent
 from PyQt5.QtCore import Qt
 
 from characters import Ghost, Pacman
@@ -96,7 +97,10 @@ class Pycman(QWidget):
     def setScore(self, score: int):
         self.score.setText(f'Score: {score}')
 
-    def keyPressEvent(self, e: QKeyEvent):
+    def keyPressEvent(self, e: QtGui.QKeyEvent):
+        if not self.manager.isPlaying():
+            return
+
         key = e.key()
         x, y = self.manager.getPacmanPosition()
 
@@ -112,6 +116,10 @@ class Pycman(QWidget):
         elif key == Qt.Key_Right:
             self.pacman.rotate('RIGHT')
             self.manager.movePacmac(x, y + 1, self.pacman)
+        self.setScore(self.manager.score)
+
+    def closeEvent(self, a0: QtGui.QCloseEvent):
+        self.manager.stopGame()
 
 
 if __name__ == '__main__':
