@@ -58,26 +58,23 @@ class Pycman(QWidget):
         self.container.addWidget(self.score)
         self.container.addWidget(self.gameMap)
         self.container.addWidget(self.playButton)
-        # self.container.addWidget(self.pacman)
 
-        self.setStyleSheet('background-color: #222;')
+        self.setStyleSheet('background-color: #000;')
         self.setLayout(self.container)
         self.setWindowTitle('Pycman')
-        # self.setGeometry(100, 100, 500, 500)
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.resize(500, 500)
         self.show()
-        print(self.size().width(), self.size().height())
 
     def initGame(self):
         self.manager = GameManager(self.gameMap)
-        x, y = self.manager.getPacmanPosition()
-        self.gameMap.mapLayout.removeWidget(self.gameMap.mapLayout.itemAtPosition(x, y).widget())
-        self.gameMap.mapLayout.addWidget(self.pacman, x, y)
-        print('pacman:', self.pacman.size().width(), self.pacman.size().height())
+        y, x = self.manager.getPacmanPosition()
+        startBlock = self.gameMap.mapWidgets[y][x]
+        startBlock.visit()
+        startBlock.hide()
+        self.gameMap.mapLayout.addWidget(self.pacman, y, x)
 
     def handlePlayClick(self):
-        print('play clicked')
         if self.manager.isPlaying():
             self.manager.stopGame()
             self.playButton.setText('Play Game')

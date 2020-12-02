@@ -1,7 +1,8 @@
 from typing import List
 
-from map import GameMap, Block, BLOCK_TYPE
+from map import GameMap, Cell, BLOCK_TYPE
 from characters import Pacman
+
 
 class GameManager:
     playing: bool
@@ -28,23 +29,22 @@ class GameManager:
     def getPacmanPosition(self):
         return tuple(self.pacmanPos)
 
-    def updatePacmanPosition(self, x: int, y: int):
-        self.pacmanPos = [x, y]
+    def updatePacmanPosition(self, y: int, x: int):
+        self.pacmanPos = [y, x]
 
-    def movePacmac(self, x: int, y: int, pacman: Pacman):
-        if self.map.isWall(x, y):
+    def movePacmac(self, y: int, x: int, pacman: Pacman):
+        if self.map.isWall(y, x):
             return
 
-        oldX, oldY = self.pacmanPos
+        oldY, oldX = self.pacmanPos
 
-        pacman = self.map.mapLayout.itemAtPosition(oldX, oldY).widget()
         self.map.mapLayout.removeWidget(pacman)
-        emptyBlock = Block(BLOCK_TYPE['EMPTY'])
-        self.map.mapLayout.addWidget(emptyBlock, oldX, oldY)
+        nextBlock = self.map.mapWidgets[y][x]
+        nextBlock.visit()
+        nextBlock.hide()
 
-        nextBlock = self.map.mapLayout.itemAtPosition(x, y).widget()
-        self.map.mapLayout.removeWidget(nextBlock)
-        self.map.mapLayout.addWidget(pacman, x, y)
+        self.map.mapWidgets[oldY][oldX].show()
+        self.map.mapLayout.addWidget(pacman, y, x)
 
-        self.updatePacmanPosition(x, y)
+        self.updatePacmanPosition(y, x)
 
