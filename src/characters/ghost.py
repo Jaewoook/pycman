@@ -20,6 +20,8 @@ class Ghost(QWidget):
             imgPath += '_red.png'
         elif color == 'blue':
             imgPath += '_blue.png'
+        elif color == 'green':
+            imgPath += '_green.png'
         self.originalImg = self.img = QPixmap(imgPath)
         self.imgLabel = QLabel()
         self.imgLabel.setPixmap(self.img)

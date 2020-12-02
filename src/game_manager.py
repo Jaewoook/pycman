@@ -8,6 +8,7 @@ class GameManager:
     playing: bool
     score: int
     pacmanPos: List[int]
+    ghostsPos: List[List[int]]
 
     map: GameMap
 
@@ -16,6 +17,7 @@ class GameManager:
         self.score = 0
         self.map = gameMap
         self.pacmanPos = [9, 1]
+        self.ghostsPos = [[5, 4], [5, 5], [5, 6]]
 
     def startGame(self):
         self.playing = True
@@ -29,8 +31,26 @@ class GameManager:
     def getPacmanPosition(self):
         return tuple(self.pacmanPos)
 
+    def getGhostPosition(self, color: str):
+        if color == 'red':
+            return tuple(self.ghostsPos[0])
+        elif color == 'blue':
+            return tuple(self.ghostsPos[1])
+        elif color == 'green':
+            return tuple(self.ghostsPos[2])
+
     def updatePacmanPosition(self, y: int, x: int):
         self.pacmanPos = [y, x]
+
+    def updateGhostPosition(self, color: str, y: int, x: int):
+        idx = 0
+        if color == 'red':
+            idx = 0
+        elif color == 'blue':
+            idx = 1
+        elif color == 'green':
+            idx = 2
+        self.ghostsPos[idx] = [y, x]
 
     def movePacmac(self, y: int, x: int, pacman: Pacman):
         if self.map.isWall(y, x):
