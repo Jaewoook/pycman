@@ -1,7 +1,7 @@
 from typing import Tuple
 from PyQt5.QtWidgets import (QWidget, QGridLayout, QVBoxLayout, QLabel, QSizePolicy)
 from PyQt5.QtGui import QPalette, QPainter, QColor, QPen
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 
 MAP_INFO = {
     'N': 0,
@@ -27,20 +27,26 @@ PACMAN_MAP = [
 ]
 
 class Map(QWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
         self.initMap()
 
     def initMap(self):
         container = QGridLayout()
+        container.setSpacing(0)
         container.setHorizontalSpacing(0)
         container.setVerticalSpacing(0)
         for i, row in enumerate(PACMAN_MAP):
             for j, col in enumerate(row):
                 block = Block(MAP_INFO[col], (i, j))
                 container.addWidget(block, i, j)
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.setLayout(container)
+        self.setStyleSheet('background-color: #000;')
         self.show()
+
+    def isWall(self, x: int, y: int):
+        return PACMAN_MAP[x][y] != 'N'
 
 
 class Block(QWidget):
@@ -57,10 +63,12 @@ class Block(QWidget):
         content = QLabel()
         content.setStyleSheet('color: #fff; background-color: #fff;')
         # layout.addWidget(content)
-        self.resize(25, 25)
         self.setLayout(layout)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.show()
+
+    def sizeHint(self):
+        return QSize(25, 25)
 
     def paintEvent(self, event):
         painter = QPainter()
@@ -90,32 +98,32 @@ class Block(QWidget):
     def drawHWall(self, painter: QPainter):
         pen = QPen(Qt.white, 2, Qt.SolidLine)
         painter.setPen(pen)
-        painter.drawLine(0, 11, 23, 11)
-
-    def drawTWall(self, painter: QPainter):
-        pen = QPen(Qt.white, 2, Qt.SolidLine)
-        painter.setPen(pen)
-        painter.drawLine(0, 23, 25, 23)
-
-    def drawBWall(self, painter: QPainter):
-        pen = QPen(Qt.white, 2, Qt.SolidLine)
-        painter.setPen(pen)
-        painter.drawLine(0, 1, 25, 1)
-
-    def drawLWall(self, painter: QPainter):
-        pen = QPen(Qt.white, 2, Qt.SolidLine)
-        painter.setPen(pen)
-        painter.drawLine(1, 0, 1, 25)
-
-    def drawRWall(self, painter: QPainter):
-        pen = QPen(Qt.white, 2, Qt.SolidLine)
-        painter.setPen(pen)
-        painter.drawLine(23, 0, 23, 25)
+        painter.drawLine(0, 11, 25, 11)
 
     def drawVWall(self, painter: QPainter):
         pen = QPen(Qt.white, 2, Qt.SolidLine)
         painter.setPen(pen)
-        painter.drawLine(11, 0, 11, 23)
+        painter.drawLine(11, 0, 11, 25)
+
+    def drawTWall(self, painter: QPainter):
+        pen = QPen(Qt.white, 6, Qt.SolidLine)
+        painter.setPen(pen)
+        painter.drawLine(0, 24, 25, 24)
+
+    def drawBWall(self, painter: QPainter):
+        pen = QPen(Qt.white, 6, Qt.SolidLine)
+        painter.setPen(pen)
+        painter.drawLine(0, 1, 25, 1)
+
+    def drawLWall(self, painter: QPainter):
+        pen = QPen(Qt.white, 6, Qt.SolidLine)
+        painter.setPen(pen)
+        painter.drawLine(1, 0, 1, 25)
+
+    def drawRWall(self, painter: QPainter):
+        pen = QPen(Qt.white, 6, Qt.SolidLine)
+        painter.setPen(pen)
+        painter.drawLine(24, 0, 24, 25)
 
 
     def markVisited(self):
@@ -127,4 +135,5 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     test = Map()
     test.setWindowTitle('Test')
+    print(test.size().width(), test.size().height())
     sys.exit(app.exec_())
