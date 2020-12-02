@@ -1,32 +1,35 @@
 from typing import List
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout,
-                            QGridLayout, QPushButton, QLabel)
+                            QGridLayout, QPushButton, QLabel,
+                            QSizePolicy)
+from PyQt5.QtGui import QKeyEvent
+from PyQt5.QtCore import Qt
 
-from characters.ghost import Ghost
-from characters.pacman import Pacman
-from map import Map
+from characters import Ghost, Pacman
+from map import GameMap
 from game_manager import GameManager
 import simple_ai
+
 
 class Pycman(QWidget):
     manager: GameManager
     container: QGridLayout
-    gameMap: Map
+    gameMap: GameMap
     ghosts: List[Ghost]
     pacman: Pacman
 
     playButton: QPushButton
+    score: QLabel
 
     def __init__(self):
         super().__init__()
-        self.manager = GameManager()
         self.initGUI()
         self.initGame()
 
     def initGUI(self):
         title = QLabel('Pycman Game')
         title.setStyleSheet('color: #fff; font-size: 20px;')
-        self.gameMap = Map()
+        self.gameMap = GameMap()
         self.playButton = QPushButton('Play Game')
         self.playButton.setStyleSheet('''
             width: 100%;
@@ -39,18 +42,39 @@ class Pycman(QWidget):
             color: #ff0;
         ''')
         self.playButton.clicked.connect(self.handlePlayClick)
+
+        self.score = QLabel()
+        self.setScore(0)
+        self.score.setStyleSheet('''
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+        ''')
+
+        self.pacman = Pacman()
+
         self.container = QVBoxLayout()
-        # self.container.addWidget(title)
+        self.container.addWidget(title)
+        self.container.addWidget(self.score)
         self.container.addWidget(self.gameMap)
         self.container.addWidget(self.playButton)
-        self.setStyleSheet('background-color: #000;')
+        # self.container.addWidget(self.pacman)
+
+        self.setStyleSheet('background-color: #222;')
         self.setLayout(self.container)
         self.setWindowTitle('Pycman')
-        self.setGeometry(100, 100, 500, 500)
+        # self.setGeometry(100, 100, 500, 500)
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.resize(500, 500)
         self.show()
+        print(self.size().width(), self.size().height())
 
     def initGame(self):
-        self.manager.resetGame()
+        self.manager = GameManager(self.gameMap)
+        x, y = self.manager.getPacmanPosition()
+        self.gameMap.mapLayout.removeWidget(self.gameMap.mapLayout.itemAtPosition(x, y).widget())
+        self.gameMap.mapLayout.addWidget(self.pacman, x, y)
+        print('pacman:', self.pacman.size().width(), self.pacman.size().height())
 
     def handlePlayClick(self):
         print('play clicked')
@@ -60,6 +84,22 @@ class Pycman(QWidget):
         else:
             self.manager.startGame()
             self.playButton.setText('Stop Game')
+
+    def setScore(self, score: int):
+        self.score.setText(f'Score: {score}')
+
+    def keyPressEvent(self, e: QKeyEvent):
+        key = e.key()
+        x, y = self.manager.getPacmanPosition()
+
+        if key == Qt.Key_Up:
+            self.manager.movePacmac(x - 1, y, self.pacman)
+        elif key == Qt.Key_Down:
+            self.manager.movePacmac(x + 1, y, self.pacman)
+        elif key == Qt.Key_Left:
+            self.manager.movePacmac(x, y - 1, self.pacman)
+        elif key == Qt.Key_Right:
+            self.manager.movePacmac(x, y + 1, self.pacman)
 
 
 if __name__ == '__main__':
