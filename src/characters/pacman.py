@@ -15,8 +15,7 @@ class Pacman(QWidget):
         self.initCharacter()
 
     def initCharacter(self):
-        img = QPixmap(path.join(getcwd(), 'pacman.png'))
-        self.originalImg = self.img = img.scaledToWidth(25)
+        self.originalImg = self.img = QPixmap(path.join(getcwd(), 'images/pacman.png'))
         self.imgLabel = QLabel()
         self.imgLabel.setPixmap(self.img)
         self.imgLabel.setStyleSheet('background: transparent;')
