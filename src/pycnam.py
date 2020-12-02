@@ -52,6 +52,7 @@ class Pycman(QWidget):
         ''')
 
         self.pacman = Pacman()
+        self.ghosts = [Ghost('red'), Ghost('blue'), Ghost('green')]
 
         self.container = QVBoxLayout()
         self.container.addWidget(title)
@@ -72,7 +73,15 @@ class Pycman(QWidget):
         startBlock = self.gameMap.mapWidgets[y][x]
         startBlock.visit()
         startBlock.hide()
+        self.pacman.rotate('RIGHT')
         self.gameMap.mapLayout.addWidget(self.pacman, y, x)
+
+        y, x = self.manager.getGhostPosition('red')
+        self.gameMap.mapLayout.addWidget(self.ghosts[0], y, x)
+        y, x = self.manager.getGhostPosition('blue')
+        self.gameMap.mapLayout.addWidget(self.ghosts[1], y, x)
+        y, x = self.manager.getGhostPosition('green')
+        self.gameMap.mapLayout.addWidget(self.ghosts[2], y, x)
 
     def handlePlayClick(self):
         if self.manager.isPlaying():
