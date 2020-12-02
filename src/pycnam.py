@@ -8,7 +8,6 @@ from PyQt5.QtCore import Qt
 from characters import Ghost, Pacman
 from map import GameMap
 from game_manager import GameManager
-import simple_ai
 
 
 class Pycman(QWidget):
@@ -68,7 +67,10 @@ class Pycman(QWidget):
         self.show()
 
     def initGame(self):
-        self.manager = GameManager(self.gameMap)
+        self.manager = GameManager(self.gameMap, self.ghosts)
+        self.gameMap.mapLayout.removeWidget(self.pacman)
+        for i in range(0, len(self.ghosts)):
+            self.gameMap.mapLayout.removeWidget(self.ghosts[i])
         y, x = self.manager.getPacmanPosition()
         startBlock = self.gameMap.mapWidgets[y][x]
         startBlock.visit()
