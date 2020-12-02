@@ -93,12 +93,16 @@ class Pycman(QWidget):
         x, y = self.manager.getPacmanPosition()
 
         if key == Qt.Key_Up:
+            self.pacman.rotate('UP')
             self.manager.movePacmac(x - 1, y, self.pacman)
         elif key == Qt.Key_Down:
+            self.pacman.rotate('DOWN')
             self.manager.movePacmac(x + 1, y, self.pacman)
         elif key == Qt.Key_Left:
+            self.pacman.rotate('LEFT')
             self.manager.movePacmac(x, y - 1, self.pacman)
         elif key == Qt.Key_Right:
+            self.pacman.rotate('RIGHT')
             self.manager.movePacmac(x, y + 1, self.pacman)
 
 
