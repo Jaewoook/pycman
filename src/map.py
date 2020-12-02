@@ -3,7 +3,8 @@ from PyQt5.QtWidgets import (QWidget, QGridLayout, QVBoxLayout, QLabel, QSizePol
 from PyQt5.QtGui import QPalette, QPainter, QColor, QPen
 from PyQt5.QtCore import Qt, QSize
 
-MAP_INFO = {
+BLOCK_TYPE = {
+    'EMPTY': -1,
     'N': 0,
     'L': 1,
     'R': 2,
@@ -26,7 +27,10 @@ PACMAN_MAP = [
     ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
 ]
 
-class Map(QWidget):
+
+class GameMap(QWidget):
+    mapLayout: QGridLayout
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.initMap()
@@ -38,10 +42,12 @@ class Map(QWidget):
         container.setVerticalSpacing(0)
         for i, row in enumerate(PACMAN_MAP):
             for j, col in enumerate(row):
-                block = Block(MAP_INFO[col], (i, j))
+                block = Block(BLOCK_TYPE[col])
                 container.addWidget(block, i, j)
+
+        self.mapLayout = container
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        self.setLayout(container)
+        self.setLayout(self.mapLayout)
         self.setStyleSheet('background-color: #000;')
         self.show()
 
@@ -50,14 +56,11 @@ class Map(QWidget):
 
 
 class Block(QWidget):
-    position: Tuple
     type: int
-    visited: bool
-    def __init__(self, type, position, visited=False):
+
+    def __init__(self, type):
         super().__init__()
         self.type = type
-        self.position = position
-        self.visited = visited
         layout = QVBoxLayout()
         layout.setSpacing(0)
         content = QLabel()
@@ -125,9 +128,6 @@ class Block(QWidget):
         painter.setPen(pen)
         painter.drawLine(24, 0, 24, 25)
 
-
-    def markVisited(self):
-        self.visited = True
 
 if __name__ == '__main__':
     from PyQt5.QtWidgets import QApplication
