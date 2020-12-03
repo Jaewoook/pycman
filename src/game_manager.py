@@ -43,7 +43,8 @@ class GameManager:
 
     def startGame(self):
         self.playing = True
-        self.loop()
+        self.looper = threading.Timer(0.5, self.loop)
+        self.looper.start()
 
     def stopGame(self):
         self.playing = False

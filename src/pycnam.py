@@ -89,8 +89,8 @@ class Pycman(QWidget):
         if self.manager.isPlaying():
             self.manager.stopGame()
             self.playButton.setText('Play Game')
-            self.initGame()
         else:
+            self.initGame()
             self.manager.startGame()
             self.playButton.setText('Stop Game')
 
