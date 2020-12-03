@@ -24,6 +24,7 @@ class Pycman(QWidget):
     def __init__(self):
         super().__init__()
         self.initGUI()
+        self.manager = GameManager(self.gameMap, self.ghosts)
         self.initGame()
 
     def initGUI(self):
@@ -44,7 +45,6 @@ class Pycman(QWidget):
         self.playButton.clicked.connect(self.handlePlayClick)
 
         self.score = QLabel()
-        self.setScore(0)
         self.score.setStyleSheet('''
             color: #fff;
             font-size: 14px;
@@ -68,10 +68,9 @@ class Pycman(QWidget):
         self.show()
 
     def initGame(self):
+        self.gameMap.reset()
         self.manager = GameManager(self.gameMap, self.ghosts)
-        self.gameMap.mapLayout.removeWidget(self.pacman)
-        for i in range(0, len(self.ghosts)):
-            self.gameMap.mapLayout.removeWidget(self.ghosts[i])
+        self.setScore(0)
         y, x = self.manager.getPacmanPosition()
         startBlock = self.gameMap.mapWidgets[y][x]
         startBlock.visit()
@@ -90,6 +89,7 @@ class Pycman(QWidget):
         if self.manager.isPlaying():
             self.manager.stopGame()
             self.playButton.setText('Play Game')
+            self.initGame()
         else:
             self.manager.startGame()
             self.playButton.setText('Stop Game')
@@ -102,20 +102,20 @@ class Pycman(QWidget):
             return
 
         key = e.key()
-        x, y = self.manager.getPacmanPosition()
+        y, x = self.manager.getPacmanPosition()
 
         if key == Qt.Key_Up:
             self.pacman.rotate('UP')
-            self.manager.movePacmac(x - 1, y, self.pacman)
+            self.manager.movePacmac(y - 1, x, self.pacman)
         elif key == Qt.Key_Down:
             self.pacman.rotate('DOWN')
-            self.manager.movePacmac(x + 1, y, self.pacman)
+            self.manager.movePacmac(y + 1, x, self.pacman)
         elif key == Qt.Key_Left:
             self.pacman.rotate('LEFT')
-            self.manager.movePacmac(x, y - 1, self.pacman)
+            self.manager.movePacmac(y, x - 1, self.pacman)
         elif key == Qt.Key_Right:
             self.pacman.rotate('RIGHT')
-            self.manager.movePacmac(x, y + 1, self.pacman)
+            self.manager.movePacmac(y, x + 1, self.pacman)
         self.setScore(self.manager.score)
 
     def closeEvent(self, a0: QtGui.QCloseEvent):

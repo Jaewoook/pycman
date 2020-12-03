@@ -34,6 +34,13 @@ class GameManager:
         self.moveGhosts()
         self.looper.start()
 
+    def resetGame(self):
+        self.looper = None
+        self.playing = False
+        self.score = 0
+        self.pacmanPos = [9, 1]
+        self.ghostsPos = [[5, 4], [5, 5], [5, 6]]
+
     def startGame(self):
         self.playing = True
         self.loop()

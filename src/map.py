@@ -129,6 +129,7 @@ class Cell(QWidget):
         return True
 
     def reset(self):
+        self.show()
         if self.block.type == -1:
             self.visited = False
             self.block.type = 0
