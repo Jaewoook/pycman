@@ -128,13 +128,21 @@ class Cell(QWidget):
         self.block.update()
         return True
 
+    def reset(self):
+        if self.block.type == -1:
+            self.visited = False
+            self.block.type = 0
+            self.block.update()
+
 
 class GameMap(QWidget):
     mapLayout: QGridLayout
     mapWidgets: List[List[Cell]]
+    ready: bool
 
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
+    def __init__(self):
+        super().__init__()
+        self.ready = False
         self.initMap()
 
     def initMap(self):
@@ -153,11 +161,18 @@ class GameMap(QWidget):
         self.mapLayout = container
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.setLayout(self.mapLayout)
-        self.setStyleSheet('background-color: #000;')
-        self.show()
+        self.ready = True
 
     def isWall(self, y: int, x: int):
         return PACMAN_MAP[y][x] != 'N'
+
+    def reset(self):
+        if self.ready:
+            return
+
+        for row in self.mapWidgets:
+            for cell in row:
+                cell.reset()
 
 
 if __name__ == '__main__':

@@ -40,6 +40,7 @@ class GameManager:
 
     def stopGame(self):
         self.playing = False
+        self.map.ready = False
         if self.looper is not None:
             self.looper.cancel()
 
