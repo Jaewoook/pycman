@@ -45,7 +45,7 @@ class Block(QWidget):
         self.painter.begin(self)
         self.painter.eraseRect(event.rect())
         if self.type == -1:
-            self.drawEMpty()
+            self.drawEmpty()
         elif self.type == 0:
             self.drawDot()
         elif self.type == 1:
@@ -62,7 +62,7 @@ class Block(QWidget):
             self.drawVWall()
         self.painter.end()
 
-    def drawEMpty(self):
+    def drawEmpty(self):
         pen = QPen(Qt.black, 3)
         self.painter.setPen(pen)
         self.painter.drawPoint(11, 11)
